@@ -1,0 +1,24 @@
+#!/bin/tcsh
+
+#$ -m ae
+#$ -M example@kcl.ac.uk
+#$ -o $HOME/logs
+#$ -e $HOME/logs
+#$ -N perm_gen
+
+# Remember to load any modules required - default enviornment not active for queued jobs
+module load anaconda/3.6
+
+set working_data=$HOME/DOPA_symptoms/src_clean
+set list=$HOME/DOPA_symptoms/data/perm.list
+
+set file="`awk 'FNR==$SGE_TASK_ID' ${list}`"
+cd $working_data/permutation_test
+
+
+setenv CONDA_ENV_PATH $HOME/.conda/envs/python36
+setenv CONDA_DEFAULT_ENV python36
+setenv PATH $HOME/.conda/envs/python36/bin:${PATH}
+
+
+python perm_gen_cortical_2.py ${file}

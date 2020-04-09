@@ -1,0 +1,17 @@
+#!/bin/tcsh
+
+#$ -m ae
+#$ -M example@kcl.ac.uk
+#$ -o $HOME/logs
+#$ -e $HOME/logs
+#$ -N null_dist
+
+# Remember to load any modules required - default enviornment not active for queued jobs
+module load anaconda/3.6
+
+set working_data=$HOME/DOPA_symptoms/src_clean/permutation_test
+set list=$HOME/DOPA_symptoms/data/subjects.list
+
+set file="`awk 'FNR==$SGE_TASK_ID' ${list}`"
+cd working_data
+python null_cortical_perm.py ${file}

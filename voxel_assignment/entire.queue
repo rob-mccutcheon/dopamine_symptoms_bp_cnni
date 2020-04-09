@@ -1,0 +1,39 @@
+#!/bin/tcsh
+
+#$ -m ae
+#$ -M example@kcl.ac.uk
+#$ -o $HOME/logs
+#$ -e $HOME/logs
+#$ -N scripted
+
+# Remember to load any modules required - default enviornment not active for queued jobs
+#module load anaconda/3.6
+
+set node_selection=scripted
+set working_data=$HOME/DOPA_symptoms/src
+set list=$HOME/DOPA_symptoms/data/subjects.list #orig
+#set list=$HOME/DOPA_symptoms/src/hcp/subjects2.list #hcp
+
+set file="`awk 'FNR==$SGE_TASK_ID' ${list}`"
+cd $working_data/voxel_assignment/
+python voxel_probabilities.py ${file} ${node_selection}
+
+cd $working_data/voxel_assignment/striatal_masking
+python create_striatal_probability_masks.py ${file} ${node_selection}
+echo ${node_selection}
+
+echo `which python`
+# bash source activate python36
+# tcsh
+cd $working_data/pet_extraction/
+set striatum_dir=$HOME/DOPA_symptoms/results/indiv_striatum_probability_maps/$node_selection/numpy
+set b = "not enough files made"
+set target_files = 52
+set num_files = `ls $striatum_dir | wc -l`
+if ($num_files == $target_files) then;
+python pet_extract_probability.py ${node_selection};
+else;
+echo $b;
+endif
+
+

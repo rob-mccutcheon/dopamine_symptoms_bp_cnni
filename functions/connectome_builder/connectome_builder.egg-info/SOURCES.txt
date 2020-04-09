@@ -1,0 +1,7 @@
+README.txt
+connectome_builder.py
+setup.py
+connectome_builder.egg-info/PKG-INFO
+connectome_builder.egg-info/SOURCES.txt
+connectome_builder.egg-info/dependency_links.txt
+connectome_builder.egg-info/top_level.txt
